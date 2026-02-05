@@ -1,4 +1,4 @@
-# JayaMaga (exame-maneger)
+# JayaMaga (exam-maneger)
 
 exam paper management system
 
