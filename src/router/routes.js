@@ -14,7 +14,7 @@ const routes = [
     children: [
       { path: 'exams', component: () => import('pages/Exam/ExamCatalog.vue') },
       { path: 'dashboard', component: () => import('pages/Student/StudentDashboard.vue') },
-      { path: 'leaderboard', component: () => import('pages/Student/StudentLeaderboard.vue') },
+
       { path: 'settings', component: () => import('pages/Student/ProfileSettings.vue') },
     ],
   },
@@ -29,10 +29,14 @@ const routes = [
   {
     path: '/admin',
     component: () => import('layouts/AdminLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Admin/AdminDashboard.vue') }],
+    children: [
+      { path: '', component: () => import('pages/Admin/AdminDashboard.vue') },
+      { path: 'exams', component: () => import('pages/Admin/AdminDashboard.vue') }, // Placeholder
+      { path: 'questions', component: () => import('pages/Admin/AdminDashboard.vue') }, // Placeholder
+    ],
     beforeEnter: (to, from, next) => {
       // Mock Admin Check
-      const isAdmin = false // Simulating student user
+      const isAdmin = true // Simulating admin user for development
       if (isAdmin) {
         next()
       } else {

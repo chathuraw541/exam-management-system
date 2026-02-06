@@ -1,193 +1,278 @@
 <template>
   <q-page
-    class="bg-background-light dark:bg-background-dark text-[#0d1b1b] dark:text-white antialiased font-display"
+    class="bg-background-light dark:bg-background-dark text-[#0d1b1b] dark:text-white antialiased font-display min-h-screen"
   >
     <div
-      class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden max-w-7xl mx-auto md:px-8"
+      class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden max-w-7xl mx-auto px-4 md:px-8 pt-8 pb-32"
     >
       <!-- Header -->
-      <div
-        class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-[#cfe7e7] dark:border-[#1a3535] md:border-none md:pt-8"
-      >
+      <div class="flex items-center justify-between mb-8">
         <div
           @click="$router.push('/app/dashboard')"
-          class="text-[#0d1b1b] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer hover:bg-black/5 rounded-full transition-colors"
+          class="flex items-center gap-2 cursor-pointer group text-slate-gray dark:text-gray-300 hover:text-primary transition-colors"
         >
-          <span class="material-symbols-outlined">arrow_back</span>
+          <div
+            class="w-10 h-10 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm"
+          >
+            <span class="material-symbols-outlined">arrow_back</span>
+          </div>
+          <span class="font-bold hidden md:inline">Back to Dashboard</span>
         </div>
         <h2
-          class="text-[#0d1b1b] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10 md:text-left md:pl-4 md:text-2xl"
+          class="text-xl md:text-2xl font-black text-slate-gray dark:text-white text-center flex-1 pr-12 md:pr-0"
         >
-          ප්රතිඵල සහ සමාලෝචනය
+          Exam Summary
         </h2>
+        <div class="hidden md:block w-32"></div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 md:p-0 md:mt-4 pb-32">
-        <!-- Left Col: Stats -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Score & Stats -->
         <div class="lg:col-span-1 space-y-6">
-          <!-- Summary Banner -->
-          <div class="flex flex-wrap lg:flex-col gap-4">
+          <!-- Hero Score Card -->
+          <div
+            class="relative flex flex-col items-center justify-center p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-xl overflow-hidden"
+          >
             <div
-              class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#cfe7e7] dark:border-[#1a3535] bg-white dark:bg-[#152e2e] shadow-sm"
+              class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"
+            ></div>
+
+            <q-circular-progress
+              show-value
+              font-size="40px"
+              :value="percentage"
+              size="180px"
+              :thickness="0.15"
+              color="primary"
+              track-color="grey-3"
+              class="font-black text-slate-gray dark:text-white mb-6"
             >
-              <p class="text-[#4c9a9a] text-sm font-medium leading-normal">ලකුණු ප්රමාණය</p>
-              <p class="text-[#0d1b1b] dark:text-white tracking-light text-4xl font-bold leading-tight">
-                85%
-              </p>
+              {{ percentage }}%
+            </q-circular-progress>
+
+            <h3 class="text-3xl font-black text-center mb-2 animate-fade-in-up">
+              {{ resultMessage.title }}
+            </h3>
+            <p
+              class="text-slate-gray/70 dark:text-gray-400 text-center font-medium animate-fade-in-up delay-100"
+            >
+              {{ resultMessage.subtitle }}
+            </p>
+          </div>
+
+          <!-- Stats Bento Grid -->
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Total Questions -->
+            <div
+              class="p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center gap-2 hover:border-primary/30 transition-colors"
+            >
+              <span class="material-symbols-outlined text-blue-500 text-3xl">list_alt</span>
+              <span class="text-2xl font-bold text-slate-gray dark:text-white">{{ total }}</span>
+              <span class="text-xs font-bold text-slate-gray/50 dark:text-gray-500 uppercase"
+                >Questions</span
+              >
             </div>
+
+            <!-- Correct Answers -->
             <div
-              class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#cfe7e7] dark:border-[#1a3535] bg-white dark:bg-[#152e2e] shadow-sm"
+              class="p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center gap-2 hover:border-green-500/30 transition-colors"
             >
-              <p class="text-[#4c9a9a] text-sm font-medium leading-normal">ප්රතිඵලය</p>
-              <p class="text-primary-active tracking-light text-4xl font-bold leading-tight">සමත්</p>
+              <span class="material-symbols-outlined text-green-500 text-3xl">check_circle</span>
+              <span class="text-2xl font-bold text-slate-gray dark:text-white">{{ score }}</span>
+              <span class="text-xs font-bold text-slate-gray/50 dark:text-gray-500 uppercase"
+                >Correct</span
+              >
             </div>
           </div>
 
-           <!-- Desktop Actions (Moved from bottom) -->
-          <div class="hidden lg:flex flex-col gap-3 sticky top-24">
+          <!-- Category Breakdown Chart -->
+          <div
+            class="p-6 rounded-3xl bg-white dark:bg-white/5 border border-gray-100 dark:border-gray-800 w-full animate-fade-in-up delay-200"
+          >
+            <h4
+              class="text-sm font-bold uppercase tracking-widest text-slate-gray dark:text-gray-400 mb-4 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined font-normal">pie_chart</span> Performance by
+              Topic
+            </h4>
+            <div v-if="loadingReview" class="flex justify-center py-4">
+              <q-spinner color="primary" size="2em" />
+            </div>
+            <div v-else class="space-y-4">
+              <div v-for="(cat, idx) in categoryStats" :key="idx" class="space-y-1">
+                <div class="flex justify-between text-xs font-bold">
+                  <span>{{ cat.name }}</span>
+                  <span>{{ cat.percentage }}%</span>
+                </div>
+                <div class="h-2 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-primary transition-all duration-1000"
+                    :style="{ width: cat.percentage + '%' }"
+                  ></div>
+                </div>
+              </div>
+              <div
+                v-if="categoryStats.length === 0"
+                class="text-xs text-center text-gray-400 italic"
+              >
+                No category data available
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop Actions -->
+          <div class="hidden lg:flex flex-col gap-3 sticky top-8">
             <button
-               class="w-full bg-primary-active text-[#0d1b1b] font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-transform hover:scale-105"
+              @click="$router.go(-1)"
+              class="w-full h-14 bg-gradient-to-r from-primary to-primary-login text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">refresh</span>
-              වැරදුනු ප්රශ්න නැවත කරන්න
+              Retake Exam
             </button>
             <button
               @click="$router.push('/app/dashboard')"
-              class="w-full bg-[#e8f0f0] dark:bg-[#1a3535] text-[#0d1b1b] dark:text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-transform hover:scale-105"
+              class="w-full h-14 bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 text-slate-gray dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
             >
-              <span class="material-symbols-outlined">home</span>
-              මුල් පිටුවට
+              <span class="material-symbols-outlined">dashboard</span>
+              Back to Dashboard
             </button>
           </div>
         </div>
 
-        <!-- Right Col: Review List -->
+        <!-- Right Column: Detailed Review -->
         <div class="lg:col-span-2 space-y-6">
-             <!-- Filter Tabs -->
-            <div class="pb-3 px-1">
-              <div class="flex border-b border-[#cfe7e7] dark:border-[#1a3535] justify-between md:justify-start md:gap-8">
-                <a
-                  class="flex flex-col items-center justify-center border-b-2 border-primary-active text-[#0d1b1b] dark:text-white pb-[13px] pt-4 min-w-[80px] cursor-pointer"
-                >
-                  <p class="text-sm font-bold leading-normal tracking-[0.015em]">සියලුම</p>
-                </a>
-                <a
-                  class="flex flex-col items-center justify-center border-b-2 border-transparent text-[#4c9a9a] pb-[13px] pt-4 min-w-[80px] cursor-pointer hover:text-primary-active/70 transition-colors"
-                >
-                  <p class="text-sm font-bold leading-normal tracking-[0.015em]">වැරදුනු</p>
-                </a>
-                <a
-                  class="flex flex-col items-center justify-center border-b-2 border-transparent text-[#4c9a9a] pb-[13px] pt-4 min-w-[80px] cursor-pointer hover:text-primary-active/70 transition-colors"
-                >
-                  <p class="text-sm font-bold leading-normal tracking-[0.015em]">විවරණ</p>
-                </a>
-              </div>
-            </div>
-
-             <!-- Review List -->
-             <div class="flex flex-col gap-6">
-        <!-- Question Item - Correct -->
-        <div class="flex flex-col gap-3">
           <div
-            class="flex gap-3 items-start border-l-4 border-primary-active bg-white dark:bg-[#152e2e] p-4 rounded-r-lg shadow-sm"
+            class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800"
           >
-            <div class="flex flex-1 flex-col gap-2">
-              <p class="text-[#0d1b1b] dark:text-white text-base font-medium leading-relaxed">
-                01. රුපියල් 500 කට භාණ්ඩයක් විකුණා 20% ක ලාභයක් ලැබූ විට එහි මුල් මිල කීයද?
-              </p>
-              <div class="flex flex-col gap-1 mt-2">
-                <p class="text-primary-active text-sm font-semibold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">check_circle</span> ඔබේ පිළිතුර:
-                  රුපියල් 416.67
-                </p>
-              </div>
-            </div>
-          </div>
-          <!-- Solution Box -->
-          <div class="bg-[#f0f4f4] dark:bg-[#1a3535] p-4 rounded-lg">
-            <p class="text-[#0d1b1b] dark:text-white text-sm font-bold mb-2">විවරණය:</p>
-            <p class="text-[#4c9a9a] text-sm leading-relaxed">
-              මෙහිදී ලාභය 20% බැවින් විකුණුම් මිල 120% වේ. <br />
-              <span class="font-mono bg-white/50 dark:bg-black/20 px-1 rounded">120% = 500</span>
-              <br />
-              එවිට
-              <span class="font-mono bg-white/50 dark:bg-black/20 px-1 rounded"
-                >100% = (500 / 120) × 100 = 416.67</span
+            <h3 class="font-bold text-slate-gray dark:text-white text-lg">Detailed Analysis</h3>
+            <div class="flex gap-2">
+              <span
+                class="px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs font-bold flex items-center gap-1"
               >
-            </p>
-          </div>
-        </div>
-        <!-- Question Item - Incorrect -->
-        <div class="flex flex-col gap-3">
-          <div
-            class="flex gap-3 items-start border-l-4 border-[#cfe7e7] dark:border-[#334b4b] bg-white dark:bg-[#152e2e] p-4 rounded-r-lg shadow-sm"
-          >
-            <div class="flex flex-1 flex-col gap-2">
-              <p class="text-[#0d1b1b] dark:text-white text-base font-medium leading-relaxed">
-                02. ශ්රේණියේ ඊළඟ අංකය කුමක්ද? 2, 6, 12, 20, ...
-              </p>
-              <div class="flex flex-col gap-1 mt-2">
-                <p class="text-red-500 text-sm font-semibold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">cancel</span> ඔබේ පිළිතුර: 28
-                </p>
-                <p class="text-primary-active text-sm font-semibold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">check_circle</span> නිවැරදි
-                  පිළිතුර: 30
-                </p>
-              </div>
+                <span class="w-2 h-2 rounded-full bg-green-500"></span> Correct
+              </span>
+              <span
+                class="px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-xs font-bold flex items-center gap-1"
+              >
+                <span class="w-2 h-2 rounded-full bg-red-500"></span> Wrong
+              </span>
             </div>
           </div>
-          <!-- Solution Box -->
-          <div class="bg-[#f0f4f4] dark:bg-[#1a3535] p-4 rounded-lg">
-            <p class="text-[#0d1b1b] dark:text-white text-sm font-bold mb-2">විවරණය:</p>
-            <p class="text-[#4c9a9a] text-sm leading-relaxed">
-              මෙම රටාව <span class="font-mono">n² + n</span> ලෙස හැඳින්විය හැක: <br />
-              1² + 1 = 2 <br />
-              2² + 2 = 6 <br />
-              3² + 3 = 12 <br />
-              4² + 4 = 20 <br />
-              <span class="text-primary-active font-bold">5² + 5 = 30</span>
-            </p>
+
+          <!-- Review Loading -->
+          <div v-if="loadingReview" class="flex flex-col gap-4">
+            <div
+              v-for="n in 3"
+              :key="n"
+              class="h-32 bg-gray-100 dark:bg-white/5 rounded-2xl animate-pulse"
+            ></div>
           </div>
-        </div>
-        <!-- Question Item - Correct -->
-        <div class="flex flex-col gap-3">
-          <div
-            class="flex gap-3 items-start border-l-4 border-primary-active bg-white dark:bg-[#152e2e] p-4 rounded-r-lg shadow-sm"
-          >
-            <div class="flex flex-1 flex-col gap-2">
-              <p class="text-[#0d1b1b] dark:text-white text-base font-medium leading-relaxed">
-                03. ශ්රී ලංකාවේ ප්රථම අග්රාමාත්යවරයා කවුද?
-              </p>
-              <div class="flex flex-col gap-1 mt-2">
-                <p class="text-primary-active text-sm font-semibold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">check_circle</span> ඔබේ පිළිතුර:
-                  ඩී.එස්. සේනානායක
-                </p>
+
+          <!-- Review List Container -->
+          <div v-else class="space-y-6">
+            <div
+              v-for="(item, index) in reviewData"
+              :key="index"
+              class="flex flex-col gap-4 animate-fade-in-up"
+              :style="{ animationDelay: `${index * 50}ms` }"
+            >
+              <!-- Question Card -->
+              <div
+                class="relative p-6 rounded-2xl bg-white dark:bg-white/5 border shadow-sm transition-colors"
+                :class="
+                  item.isCorrect
+                    ? 'border-l-4 border-l-green-500 border-gray-100 dark:border-gray-800'
+                    : 'border-l-4 border-l-red-500 border-gray-100 dark:border-gray-800'
+                "
+              >
+                <div class="flex gap-4">
+                  <span
+                    class="h-8 w-8 shrink-0 rounded-lg flex items-center justify-center text-sm font-bold"
+                    :class="
+                      item.isCorrect
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                    "
+                  >
+                    {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
+                  </span>
+                  <div class="flex-1">
+                    <div class="mb-2" v-if="item.category">
+                      <span
+                        class="text-[10px] font-bold uppercase tracking-widest bg-gray-100 dark:bg-white/10 px-2 py-1 rounded text-gray-500"
+                        >{{ item.category }}</span
+                      >
+                    </div>
+                    <p
+                      class="text-[#0d1b1b] dark:text-white font-medium text-lg leading-relaxed mb-4"
+                    >
+                      {{ item.question }}
+                    </p>
+
+                    <div class="flex flex-col gap-2">
+                      <!-- User selection if wrong -->
+                      <div
+                        v-if="!item.isCorrect"
+                        class="text-sm flex items-center gap-2 text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border border-red-100 dark:border-red-900/20"
+                      >
+                        <span class="material-symbols-outlined text-lg">cancel</span>
+                        Your Answer: {{ item.userAnswer }}
+                      </div>
+
+                      <!-- Correct Answer -->
+                      <div
+                        class="text-sm flex items-center gap-2 text-green-700 dark:text-green-400 font-bold bg-green-50 dark:bg-green-900/10 p-3 rounded-lg border border-green-100 dark:border-green-900/20"
+                      >
+                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                        Correct Answer: {{ item.correctAnswer }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Explanation Box (Conditional) -->
+              <div
+                v-if="item.explanation"
+                class="ml-12 p-5 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-500/20 relative"
+              >
+                <!-- Connector Line -->
+                <div class="absolute -top-4 left-6 w-0.5 h-4 bg-blue-200 dark:bg-blue-800"></div>
+
+                <div class="flex gap-3">
+                  <span class="material-symbols-outlined text-blue-500">lightbulb</span>
+                  <div>
+                    <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">
+                      Explanation
+                    </p>
+                    <p class="text-sm text-slate-gray/80 dark:text-gray-300 leading-relaxed">
+                      {{ item.explanation }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
-      <!-- Spacer for bottom buttons -->
-      <div class="h-10 md:hidden"></div>
-      <!-- Bottom Actions (Mobile Only) -->
+
+      <!-- Mobile Actions Fixed Bottom -->
       <div
-        class="lg:hidden fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background-light dark:bg-background-dark p-4 flex flex-col gap-3 border-t border-[#cfe7e7] dark:border-[#1a3535]"
+        class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-[#0d1b1b]/90 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 z-50 flex flex-col gap-3"
       >
         <button
-          class="w-full bg-primary-active text-[#0d1b1b] font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-sm"
+          @click="$router.go(-1)"
+          class="w-full h-12 bg-primary text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2"
         >
           <span class="material-symbols-outlined">refresh</span>
-          වැරදුනු ප්රශ්න නැවත කරන්න
+          Retake Exam
         </button>
         <button
           @click="$router.push('/app/dashboard')"
-          class="w-full bg-[#e8f0f0] dark:bg-[#1a3535] text-[#0d1b1b] dark:text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2"
+          class="w-full h-12 bg-gray-100 dark:bg-white/10 text-slate-gray dark:text-white font-bold rounded-xl flex items-center justify-center gap-2"
         >
-          <span class="material-symbols-outlined">home</span>
-          මුල් පිටුවට
+          <span class="material-symbols-outlined">dashboard</span>
+          Back to Dashboard
         </button>
       </div>
     </div>
@@ -195,16 +280,41 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import confetti from 'canvas-confetti'
+import { supabase } from '../../supabase'
 
-const passed = true // Mock result
+const route = useRoute()
 
+// Data from Query Params
+const score = computed(() => Number(route.query.score) || 0)
+const total = computed(() => Number(route.query.total) || 0)
+const percentage = computed(() =>
+  total.value > 0 ? Math.round((score.value / total.value) * 100) : 0,
+)
+
+// Data State
+const loadingReview = ref(true)
+const reviewData = ref([])
+const categoryStats = ref([])
+
+// Dynamic Message
+const resultMessage = computed(() => {
+  if (percentage.value >= 75)
+    return { title: 'Excellent Work! 🎉', subtitle: 'You have mastered this subject.' }
+  if (percentage.value >= 50)
+    return { title: 'Good Job! 👍', subtitle: 'You passed, but keep practicing.' }
+  return { title: 'Keep Trying! 💪', subtitle: "Don't give up. Review your mistakes below." }
+})
+
+// Confetti Effect
 const triggerConfetti = () => {
-  const duration = 3 * 1000
+  if (percentage.value < 50) return
+
+  const duration = 2 * 1000
   const animationEnd = Date.now() + duration
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
-
   const random = (min, max) => Math.random() * (max - min) + min
 
   const interval = setInterval(function () {
@@ -213,9 +323,7 @@ const triggerConfetti = () => {
     if (timeLeft <= 0) {
       return clearInterval(interval)
     }
-
     const particleCount = 50 * (timeLeft / duration)
-    // since particles fall down, start a bit higher than random
     confetti(
       Object.assign({}, defaults, {
         particleCount,
@@ -231,9 +339,113 @@ const triggerConfetti = () => {
   }, 250)
 }
 
-onMounted(() => {
-  if (passed) {
-    triggerConfetti()
+// Fetch Full Details
+const fetchResultDetails = async () => {
+  loadingReview.value = true
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return
+
+    const examId = route.params.id
+
+    // 1. Get Latest Result
+    const { data: resultData, error } = await supabase
+      .from('results')
+      .select('answers_json')
+      .eq('exam_id', examId)
+      //.eq('user_id', user.id) // Enable if RLS enforces user check, otherwise optional if strictly own data
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (error || !resultData) throw error
+
+    const userAnswersMap = resultData.answers_json || {} // { qId: optionIndex }
+
+    // 2. Get Questions
+    const { data: questionsData } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('exam_id', examId)
+
+    if (!questionsData) return
+
+    // 3. Process Data for Review & Stats
+    const processedReview = []
+    const catMap = {} // { 'Math': { total: 10, correct: 5 } }
+
+    questionsData.forEach((q) => {
+      const userIdx = userAnswersMap[q.id]
+      const userOptText = userIdx !== undefined && q.options ? q.options[userIdx] : 'Not Answered'
+
+      // Check correctness robustly
+      const isCorrect =
+        userOptText && q.correct_answer && userOptText.trim() === q.correct_answer.trim()
+
+      // Review Item
+      if (userIdx !== undefined) {
+        // Only show attempted or all? Showing all gives better feedback
+        processedReview.push({
+          question: q.question_text,
+          userAnswer: userOptText,
+          correctAnswer: q.correct_answer,
+          isCorrect: isCorrect,
+          explanation: q.explanation,
+          category: q.category || 'General',
+        })
+      }
+
+      // Category Stats
+      const catName = q.category || 'General'
+      if (!catMap[catName]) catMap[catName] = { total: 0, correct: 0 }
+      catMap[catName].total++
+      if (isCorrect) catMap[catName].correct++
+    })
+
+    reviewData.value = processedReview
+
+    // Finalize Category Chart Data
+    categoryStats.value = Object.keys(catMap)
+      .map((key) => ({
+        name: key,
+        percentage: Math.round((catMap[key].correct / catMap[key].total) * 100),
+      }))
+      .sort((a, b) => b.percentage - a.percentage) // Highest first
+  } catch (e) {
+    console.error('Error loading details:', e)
+  } finally {
+    loadingReview.value = false
   }
+}
+
+onMounted(() => {
+  triggerConfetti()
+  fetchResultDetails()
 })
 </script>
+
+<style scoped>
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+</style>

@@ -28,14 +28,7 @@
           <span class="material-symbols-outlined">description</span>
           Exams
         </router-link>
-        <router-link
-          to="/app/leaderboard"
-          active-class="bg-primary/10 text-primary"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-gray dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors font-medium"
-        >
-          <span class="material-symbols-outlined">leaderboard</span>
-          Leaderboard
-        </router-link>
+
         <router-link
           to="/app/settings"
           active-class="bg-primary/10 text-primary"
@@ -109,14 +102,7 @@
         <span class="material-symbols-outlined">description</span>
         <span class="text-[10px] font-bold uppercase">Exams</span>
       </router-link>
-      <router-link
-        to="/app/leaderboard"
-        active-class="text-primary"
-        class="flex flex-col items-center gap-1 text-slate-gray dark:text-gray-400 transition-transform active:scale-95"
-      >
-        <span class="material-symbols-outlined">leaderboard</span>
-        <span class="text-[10px] font-bold uppercase">Rank</span>
-      </router-link>
+
       <router-link
         to="/app/settings"
         active-class="text-primary"

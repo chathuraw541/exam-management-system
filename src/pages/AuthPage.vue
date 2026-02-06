@@ -1,34 +1,56 @@
 <template>
   <q-page
-    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center justify-center p-6 font-display"
+    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center justify-center p-6 font-display selection:bg-primary/30 selection:text-primary overflow-hidden relative"
   >
-    <div class="w-full max-w-[400px] flex flex-col items-center">
+    <!-- Background Decor -->
+    <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
       <div
-        class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-8 flex flex-col items-center"
+        class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] opacity-70 animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] opacity-60 animate-pulse-slow delay-700"
+      ></div>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="w-full max-w-[420px] flex flex-col items-center relative z-10 animate-fade-in-up">
+      <!-- Glass Card -->
+      <div
+        class="w-full bg-white/70 dark:bg-zinc-900/60 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl flex flex-col items-center"
       >
+        <!-- Header -->
         <div class="mb-8 flex flex-col items-center">
           <div
-            class="w-16 h-16 mb-6 rounded-lg bg-primary-login/10 flex items-center justify-center"
+            class="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary-login shadow-lg shadow-primary/30 flex items-center justify-center transform hover:scale-105 transition-transform duration-300"
           >
-            <span class="material-symbols-outlined text-deep-teal dark:text-primary-login text-4xl"
-              >school</span
-            >
+            <span class="material-symbols-outlined text-white text-4xl">school</span>
           </div>
-          <h1 class="text-deep-teal dark:text-white text-3xl font-bold tracking-tight mb-2">
-            ජයමඟ
+          <h1 class="text-3xl font-black tracking-tighter mb-2 text-slate-gray dark:text-white">
+            ජය<span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-login"
+              >මඟ</span
+            >
           </h1>
-          <p class="text-slate-gray dark:text-zinc-400 text-sm text-center leading-relaxed">
+          <p
+            class="text-slate-gray/70 dark:text-zinc-400 text-sm text-center font-medium leading-relaxed"
+          >
             රජයේ රැකියාවකට ඔබව සූදානම් කරන පියස
           </p>
         </div>
+
+        <!-- Dynamic Content -->
         <div class="w-full space-y-4">
           <!-- Initial View -->
           <template v-if="view === 'initial'">
             <button
               @click="handleGoogleLogin"
-              class="w-full h-12 flex items-center justify-center gap-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+              class="w-full h-14 flex items-center justify-center gap-3 bg-white dark:bg-zinc-800/50 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 group"
             >
-              <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                class="w-6 h-6 group-hover:scale-110 transition-transform"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <!-- Google SVG Content -->
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -47,19 +69,21 @@
                   fill="#EA4335"
                 ></path>
               </svg>
-              <span class="text-zinc-700 dark:text-zinc-200 font-medium">Continue with Google</span>
+              <span class="text-slate-gray dark:text-gray-200 font-bold text-sm"
+                >Continue with Google</span
+              >
             </button>
             <div class="relative py-4">
               <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-zinc-100 dark:border-zinc-800"></div>
+                <div class="w-full border-t border-gray-200 dark:border-white/10"></div>
               </div>
-              <div class="relative flex justify-center text-xs uppercase">
-                <span class="bg-white dark:bg-zinc-900 px-2 text-zinc-400">or</span>
+              <div class="relative flex justify-center text-xs font-bold uppercase tracking-widest">
+                <span class="bg-transparent px-2 text-gray-400">or</span>
               </div>
             </div>
             <button
               @click="toggleEmailView"
-              class="w-full h-12 flex items-center justify-center text-slate-gray dark:text-zinc-400 text-sm font-medium hover:text-deep-teal dark:hover:text-primary-login transition-colors"
+              class="w-full h-14 flex items-center justify-center text-slate-gray/80 dark:text-gray-300 font-bold hover:text-primary transition-colors text-sm"
             >
               Login with Email
             </button>
@@ -67,40 +91,75 @@
 
           <!-- Email Login / Signup Form -->
           <template v-else>
-            <div class="space-y-4 animate-fade-in">
+            <div class="space-y-5 animate-fade-in-right">
               <div v-if="view === 'signup'" class="space-y-2">
-                <label class="text-xs font-semibold text-zinc-500 uppercase">Full Name</label>
-                <input
-                  v-model="fullName"
-                  type="text"
-                  placeholder="Enter your name"
-                  class="w-full h-12 px-4 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-primary-login focus:border-transparent outline-none transition-all"
-                />
+                <label
+                  class="text-xs font-bold text-slate-gray/60 dark:text-gray-400 uppercase tracking-wider ml-1"
+                  >Full Name</label
+                >
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span
+                      class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors text-xl"
+                      >badge</span
+                    >
+                  </div>
+                  <input
+                    v-model="fullName"
+                    type="text"
+                    placeholder="Enter your name"
+                    class="w-full h-14 pl-12 pr-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 text-slate-gray dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                  />
+                </div>
               </div>
+
               <div class="space-y-2">
-                <label class="text-xs font-semibold text-zinc-500 uppercase">Email</label>
-                <input
-                  v-model="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  class="w-full h-12 px-4 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-primary-login focus:border-transparent outline-none transition-all"
-                />
+                <label
+                  class="text-xs font-bold text-slate-gray/60 dark:text-gray-400 uppercase tracking-wider ml-1"
+                  >Email</label
+                >
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span
+                      class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors text-xl"
+                      >mail</span
+                    >
+                  </div>
+                  <input
+                    v-model="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    class="w-full h-14 pl-12 pr-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 text-slate-gray dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                  />
+                </div>
               </div>
+
               <div class="space-y-2">
-                <label class="text-xs font-semibold text-zinc-500 uppercase">Password</label>
-                <input
-                  v-model="password"
-                  type="password"
-                  placeholder="••••••••"
-                  class="w-full h-12 px-4 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:ring-2 focus:ring-primary-login focus:border-transparent outline-none transition-all"
-                  @keyup.enter="submitAuth"
-                />
+                <label
+                  class="text-xs font-bold text-slate-gray/60 dark:text-gray-400 uppercase tracking-wider ml-1"
+                  >Password</label
+                >
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span
+                      class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors text-xl"
+                      >lock</span
+                    >
+                  </div>
+                  <input
+                    v-model="password"
+                    type="password"
+                    placeholder="••••••••"
+                    class="w-full h-14 pl-12 pr-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 text-slate-gray dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                    @keyup.enter="submitAuth"
+                  />
+                </div>
               </div>
 
               <button
                 @click="submitAuth"
                 :disabled="loading"
-                class="w-full h-12 mt-4 bg-deep-teal dark:bg-primary-login hover:bg-opacity-90 text-white font-bold rounded-lg transition-all active:scale-[0.98] flex items-center justify-center"
+                class="w-full h-14 mt-6 bg-gradient-to-r from-primary to-primary-login hover:shadow-lg hover:shadow-primary/30 text-white font-bold text-lg rounded-xl transition-all hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center"
               >
                 <q-spinner v-if="loading" size="sm" class="mr-2" />
                 {{ view === 'signup' ? 'Create Account' : 'Login' }}
@@ -108,7 +167,7 @@
 
               <button
                 @click="view = 'initial'"
-                class="w-full py-2 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                class="w-full py-2 text-xs font-bold text-slate-gray/60 dark:text-gray-400 hover:text-slate-gray dark:hover:text-white transition-colors"
               >
                 Back to options
               </button>
@@ -116,46 +175,85 @@
           </template>
         </div>
       </div>
-      <div class="mt-8 flex flex-col items-center space-y-4">
-        <p class="text-xs text-zinc-400 dark:text-zinc-500">
+
+      <!-- Footer Text -->
+      <div class="mt-8 flex flex-col items-center space-y-4 animate-fade-in delay-200">
+        <p class="text-sm font-medium text-slate-gray/70 dark:text-gray-400">
           {{ view === 'signup' ? 'Already have an account?' : 'New to LankaExam Pro?' }}
           <a
             @click.prevent="toggleSignupView"
-            class="text-primary-login font-semibold cursor-pointer hover:underline"
+            class="text-primary font-bold cursor-pointer hover:underline"
           >
             {{ view === 'signup' ? 'Login' : 'Sign Up' }}
           </a>
         </p>
         <div class="flex items-center gap-4">
-          <a class="text-[10px] text-zinc-400 dark:text-zinc-500 hover:underline" href="#"
+          <a
+            class="text-[10px] uppercase font-bold text-slate-gray/40 dark:text-gray-600 hover:text-primary transition-colors"
+            href="#"
             >Privacy Policy</a
           >
-          <span class="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
-          <a class="text-[10px] text-zinc-400 dark:text-zinc-500 hover:underline" href="#"
-            >Terms of Service</a
+          <span class="w-1 h-1 rounded-full bg-slate-gray/20 dark:bg-gray-700"></span>
+          <a
+            class="text-[10px] uppercase font-bold text-slate-gray/40 dark:text-gray-600 hover:text-primary transition-colors"
+            href="#"
+            >Terms</a
           >
         </div>
       </div>
     </div>
-    <div
-      class="fixed bottom-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary-login via-deep-teal to-primary-login opacity-20"
-    ></div>
   </q-page>
 </template>
 
 <style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-@keyframes fadeIn {
+/* Keyframes */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(5px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes pulseSlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* Animations */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-fade-in-right {
+  animation: fadeInRight 0.4s ease-out forwards;
+}
+.animate-pulse-slow {
+  animation: pulseSlow 4s infinite ease-in-out;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-700 {
+  animation-delay: 0.7s;
 }
 </style>
 

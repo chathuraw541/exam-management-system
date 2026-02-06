@@ -38,30 +38,27 @@
           <span class="font-bold text-primary">LankaExam Pro</span>
         </div>
         <nav class="flex flex-col gap-1">
-          <a
-            href="#"
-            class="flex items-center gap-4 p-3 rounded-xl bg-primary/10 text-primary font-bold"
-          >
-            <span class="material-symbols-outlined">bar_chart</span> Analytics
-          </a>
-          <a
-            href="#"
+          <router-link
+            to="/admin"
+            active-class="bg-primary/10 text-primary font-bold"
             class="flex items-center gap-4 p-3 rounded-xl hover:bg-background-light dark:hover:bg-primary/5 transition-colors text-slate-gray dark:text-white"
           >
-            <span class="material-symbols-outlined">edit_note</span> Exam Editor
-          </a>
-          <a
-            href="#"
+            <span class="material-symbols-outlined">dashboard</span> Overview
+          </router-link>
+          <router-link
+            to="/admin/exams"
+            active-class="bg-primary/10 text-primary font-bold"
             class="flex items-center gap-4 p-3 rounded-xl hover:bg-background-light dark:hover:bg-primary/5 transition-colors text-slate-gray dark:text-white"
           >
-            <span class="material-symbols-outlined">group</span> Users
-          </a>
-          <a
-            href="#"
+            <span class="material-symbols-outlined">edit_note</span> Manage Exams
+          </router-link>
+          <router-link
+            to="/admin/questions"
+            active-class="bg-primary/10 text-primary font-bold"
             class="flex items-center gap-4 p-3 rounded-xl hover:bg-background-light dark:hover:bg-primary/5 transition-colors text-slate-gray dark:text-white"
           >
-            <span class="material-symbols-outlined">campaign</span> Announcements
-          </a>
+            <span class="material-symbols-outlined">quiz</span> Question Bank
+          </router-link>
         </nav>
       </div>
     </q-drawer>
